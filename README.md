@@ -1,13 +1,14 @@
 # usbhid_joypad_to_dsub15
 arduinoにてusbHIDJoypadをD-sub15ピンコネクタ（ネオジオ）に変換するためのスケッチ
 
-必須
+# 必須データ
 USB_Host_Shield_2.0 library
 https://github.com/felis/USB_Host_Shield_2.0
 
 配線図は今後準備予定
 
 
+# 参考資料
 以下のスケッチを参考にしています。
 
 USB接続のJoystickをArduinoとUSB Host Shieldでボタン検知する
@@ -18,3 +19,10 @@ https://keitetsu.blogspot.com/2014/11/arduino-ad.html
 
 Arduinoで一定の単位時間（フレーム）ごとに処理を進める
 https://qiita.com/Ninagawa_Izumi/items/f8585c5c711bcf065656
+
+
+# Author
+カキヤザクロ
+z.kakiya@gmail.com
+z_kakiya#2835
+(discord)
