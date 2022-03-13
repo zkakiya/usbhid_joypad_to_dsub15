@@ -20,11 +20,12 @@
 //管理するボタンの数
 #define HANDLE_BUTTON_NUM       15
 
-unsigned long sentTime = 0;  // 最後に送信した時刻[ms]
-unsigned long period = 8;  // データ更新周期[ms]
-
-unsigned long keyassignPeriod = 500;// ロータリースイッチチェック周期[ms]
-
+const unsigned long frame_ms = 1000/120;//1フレーム辺りの単位時間（ms)（秒間120フレーム管理）
+unsigned long frame_checker;//フレーム管理時計の時刻
+unsigned long merc;
+unsigned long curr;//現在時刻をミリ秒で取得する変数
+unsigned long curr_micro;//現在時刻をマイクロ秒で取得する変数
+int frame_count;//フレームカウント変数
 
 //仮想ジョイパッドの状態を管理
 //方向キーの状態（方向キー）
@@ -243,19 +244,41 @@ void setup() {
 void loop() {
         Usb.Task();
 
-        if(sentTime/period != millis()/period)
-        {
-                sentTime = millis();
-                MyJoyEvents.printActiveVButton();
-                MyJoyEvents.pinStateOutput();
-        }
-        if(sentTime/keyassignPeriod != millis()/keyassignPeriod)
+        Serial.println(frame_count);
+        MyJoyEvents.printActiveVButton();
+        MyJoyEvents.pinStateOutput();
+
+        if(frame_count % 30 == 0)
         {
                 //【注意】ロータリスイッチを接続していない場合は必ずコメントアウトすること
                 //ロータリスイッチ未接続かつ下記関数がアクティブの場合、装置全体が動作できない
-                //一定間隔（keyassignPeriod）にキープリセットの操作が行われているか（変化があったかどうか）チェックして、
+                //キープリセットの操作が行われているか（変化があったかどうか）をチェックして、
                 //操作があった際は使用するキープリセットを切り替える
                 RotSwCheck.checkRotSwChange();
         }
+
+        unsigned long curr = millis();//現在時刻取得
+        if(curr - frame_checker > frame_ms) {//現在時刻とフレーム管理時計のタイミングズレチェック
+                Serial.print("*** processing delay :");
+                Serial.println(curr - frame_checker);
+                frame_checker = millis();//現在時刻取得
+        } else {
+                while(curr - frame_checker < frame_ms){
+                        curr = millis();
+                }
+                frame_checker = curr;
+        }
+        frame_count = frame_count + 1;
+        if(frame_count > 10000){
+                frame_count = 0;
+        }
+
+        //余剰時間を消化する処理。
+        curr = millis();
+        curr_micro = micros();//現在時刻を取得
+        while(curr < merc){
+                curr = millis();
+        }
+        merc += frame_ms;//フレーム管理時計を1フレーム分進める
 
 }
