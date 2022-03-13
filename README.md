@@ -14,7 +14,7 @@ https://github.com/felis/USB_Host_Shield_2.0
 
 # ハードについて
 （配線図を今後準備予定）  
-ピンアサインは
+ピンアサインは  
 2 UP  
 3 DOWN  
 4 LEFT  
