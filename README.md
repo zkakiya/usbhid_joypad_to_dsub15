@@ -29,7 +29,7 @@ https://qiita.com/Ninagawa_Izumi/items/f8585c5c711bcf065656
 
 
 # Author
-*カキヤザクロ
-*e-mail: z.kakiya@gmail.com
-*discord: z_kakiya#2835
+* カキヤザクロ
+* e-mail: z.kakiya@gmail.com
+* discord: z_kakiya#2835
 
