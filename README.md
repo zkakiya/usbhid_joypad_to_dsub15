@@ -34,7 +34,7 @@ A6 BTN_0
 * Arduino - ロータリスイッチの状態をA/D変換で取得する  
 https://keitetsu.blogspot.com/2014/11/arduino-ad.html  
 の回路図から制作しました。  
-検出用のピンはA5ピンに接続するようにしています。  
+検出用のピンはA5ピンに接続しています。  
 ただし、+5V部分はaruduino pro mini(3.3v)の場合、vccピン(3.3v)に接続しています。  
 arduino UNOの場合は5Vピンです。
 
