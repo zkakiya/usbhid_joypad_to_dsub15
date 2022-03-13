@@ -13,7 +13,22 @@ USB_Host_Shield_2.0 library
 https://github.com/felis/USB_Host_Shield_2.0
 
 # ハードについて
-配線図を今後準備予定
+（配線図を今後準備予定）  
+ピンアサインは
+2 UP  
+3 DOWN  
+4 LEFT  
+5 RIGHT  
+6 BTN_1  
+7 BTN_2  
+8 BTN_3  
+A0 BTN_4  
+A1 START  
+A2 SELECT/COIN  
+A3 BTN_5  
+A4 BTN_6  
+A6 (KeyPreset)  
+A7 BTN_0
 
 # 参考資料
 USB_Host_Shield_2.0 library  
