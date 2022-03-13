@@ -19,12 +19,19 @@
 #define HANDLE_ASSIGN_NUM       9
 //管理するボタンの数
 #define HANDLE_BUTTON_NUM       15
+//外部出力するボタンの数
+#define HANDLE_OUTPUTBUTTON_NUM 6
+//管理するキーマクロの数
+#define HANDLE_KEYMACRO_NUM 5
 
 const unsigned long frame_ms = 1000/120;//1フレーム辺りの単位時間（ms)（秒間120フレーム管理）
 int frame_count;//フレームカウント
 
 //ロータリSWのポジション検出用ピン指定
 #define PIN_ROTARYSW A5
+
+//マクロ実行中か否かのフラグ
+bool isMacroInProcess = false;
 
 //仮想ジョイパッドの状態を管理
 //方向キーの状態（方向キー）
@@ -86,6 +93,32 @@ private:
 };
 
 
+//キーマクロの型を定義
+struct KeyMacroStep {
+        bool MHatState[4];
+        bool MButtonState[HANDLE_OUTPUTBUTTON_NUM];
+        int RemainFrame;
+};
+//キーマクロ実際の記述
+struct KeyMacroStep MacroDetail[] = {
+        {{0,0,0,1},{0,0,0,0,0,0},45},
+        {{0,1,0,0},{0,0,0,0,0,0},45},
+        {{0,0,0,0},{0,0,0,0,0,0},20},
+        {{0,1,0,0},{0,0,0,0,0,0},20},
+};
+
+class KeyMacro {
+public:
+        void playKeyMacro();//キーマクロ再生（ステップを進める？）
+        void startKeyMacro();//キーマクロ初期化
+        void checkKeyMacroFrag();//キーマクロの開始フラグを検知
+
+private:
+        struct KeyMacroStep procedure_arg;//現在再生しているキーマクロステップの一時記憶
+        int procedure_step;//現在再生しているキーマクロのステップ数
+        int size_arg_macro;//現在再生しているマクロの要素数
+        int vButton_for_keymacro[HANDLE_KEYMACRO_NUM];//キーマクロ用に定義された仮想ボタン
+};
 
 
 USB Usb;
@@ -94,6 +127,8 @@ HIDUniversal Hid(&Usb);
 MyJoystickEvents MyJoyEvents;  //継承した新しいクラスに書き換える
 JoystickReportParser Joy(&MyJoyEvents);  //新しいクラスのインスタンスを使う
 RotarySwChecker RotSwCheck;
+KeyMacro KeyMacroProcedure;
+
 
 void setup() {
         Serial.begin(115200);
@@ -133,6 +168,9 @@ void loop() {
         Serial.println(frame_count);
         MyJoyEvents.printActiveVButton();
         MyJoyEvents.pinStateOutput();
+
+        KeyMacroProcedure.checkKeyMacroFrag();
+        KeyMacroProcedure.playKeyMacro();
 
         //ボトルネックになる可能性があるため、30フレームごとの処理としている
         if(frame_count % 60 == 0)
