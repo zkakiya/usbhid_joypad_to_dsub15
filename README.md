@@ -8,13 +8,16 @@ arduinoにてusbHIDJoypadをD-sub15ピンコネクタ（ネオジオ）に変換
 また、ハード側は単にボタン入力を変換するだけでなく、連射装置やキーマクロ等も（理論上は）可能な構造になっています。
 
 # 必須データ
-USB_Host_Shield_2.0 library
+USB_Host_Shield_2.0 library  
 https://github.com/felis/USB_Host_Shield_2.0
 
 # ハードについて
 配線図を今後準備予定
 
 # 参考資料
+USB_Host_Shield_2.0 library  
+https://github.com/felis/USB_Host_Shield_2.0  
+および、  
 以下のスケッチを参考にしています。
 
 * USB接続のJoystickをArduinoとUSB Host Shieldでボタン検知する  
