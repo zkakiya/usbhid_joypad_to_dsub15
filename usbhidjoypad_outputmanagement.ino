@@ -51,26 +51,3 @@ void MyJoystickEvents::virtualJoypadArrowAssign(){
         //hatスイッチが←要素に入っていた場合、VHatState[3]を真とする。(入っていない場合は偽）
         VHatState[3] = (((hatState == 5||hatState == 6||hatState == 7)&&(!VGAssign.isHatReverse))||((hatState == 1||hatState == 2||hatState == 3)&&(VGAssign.isHatReverse))) ? true : false;
 }
-void MyJoystickEvents::pinStateOutput(void) {
-        //仮想ジョイパッドの状態をarduinoのピンに出力する。
-        //方向キー割り当て
-
-        VHatState[0] ? digitalWrite(2, LOW) : digitalWrite(2, HIGH);
-        VHatState[1] ? digitalWrite(5, LOW) : digitalWrite(5, HIGH);
-        VHatState[2] ? digitalWrite(3, LOW) : digitalWrite(3, HIGH);
-        VHatState[3] ? digitalWrite(4, LOW) : digitalWrite(4, HIGH);
-        //その他ボタン割り当て
-        VButtonState[0] ? digitalWrite(6, LOW) : digitalWrite(6, HIGH);
-        VButtonState[1] ? digitalWrite(7, LOW) : digitalWrite(7, HIGH);
-        VButtonState[2] ? digitalWrite(8, LOW) : digitalWrite(8, HIGH);
-        VButtonState[3] ? digitalWrite(A0, LOW) : digitalWrite(A0, HIGH);
-        VButtonState[4] ? digitalWrite(A1, LOW) : digitalWrite(A1, HIGH);
-        VButtonState[5] ? digitalWrite(A2, LOW) : digitalWrite(A2, HIGH);
-        VButtonState[6] ? digitalWrite(A3, LOW) : digitalWrite(A3, HIGH);
-        VButtonState[7] ? digitalWrite(A4, LOW) : digitalWrite(A4, HIGH);
-        //A5ピンはロータリースイッチ検出に使用するため、JAMMAキー入力には不使用とする。
-        // arduino UNO用（11～13ピン）
-        VButtonState[8] ? digitalWrite(11, LOW) : digitalWrite(11, HIGH);
-        VButtonState[9] ? digitalWrite(12, LOW) : digitalWrite(12, HIGH);
-        VButtonState[10] ? digitalWrite(13, LOW) : digitalWrite(13, HIGH);
-}
