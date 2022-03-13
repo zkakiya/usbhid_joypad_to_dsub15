@@ -23,8 +23,10 @@
 #define HANDLE_OUTPUTBUTTON_NUM 6
 //管理するキーマクロの数
 #define HANDLE_KEYMACRO_NUM 5
+//秒間何フレームで処理するか
+#define BASE_FRAME 120
 
-const unsigned long frame_ms = 1000/120;//1フレーム辺りの単位時間（ms)（秒間120フレーム管理）
+const unsigned long frame_ms = 1000/BASE_FRAME;//1フレーム辺りの単位時間（ms)（秒間120フレーム管理）
 int frame_count;//フレームカウント
 
 //ロータリSWのポジション検出用ピン指定
@@ -170,7 +172,11 @@ void loop() {
         MyJoyEvents.pinStateOutput();
 
         KeyMacroProcedure.checkKeyMacroFrag();
-        KeyMacroProcedure.playKeyMacro();
+
+        //キーマクロを秒間60フレームで制御するためのフレーム調整
+        if(frame_count % (BASE_FRAME / 60) == 0){
+                KeyMacroProcedure.playKeyMacro();
+        }
 
         //ボトルネックになる可能性があるため、30フレームごとの処理としている
         if(frame_count % 60 == 0)
