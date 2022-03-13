@@ -14,21 +14,23 @@ https://github.com/felis/USB_Host_Shield_2.0
 
 # ハードについて
 （配線図を今後準備予定）  
-ピンアサインは  
-2 UP  
-3 DOWN  
-4 LEFT  
-5 RIGHT  
-6 BTN_1  
-7 BTN_2  
-8 BTN_3  
-A0 BTN_4  
-A1 START  
-A2 SELECT/COIN  
-A3 BTN_5  
-A4 BTN_6  
-A5 (KeyPreset)  
-A6 BTN_0
+D-sub15ピンコネクタ（メス）からarduinoのピンへの接続は  
+1 GND  
+2 A4  
+3 A2  
+4 A0  
+5 7  
+6 5  
+7 3  
+8 RAW  
+9 A6  
+10 A3  
+11 A1  
+12 8  
+13 6  
+14 4  
+15 2  
+としました。
 
 キープリセット用のロータリースイッチ回路は
 * Arduino - ロータリスイッチの状態をA/D変換で取得する  
