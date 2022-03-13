@@ -27,8 +27,16 @@ A1 START
 A2 SELECT/COIN  
 A3 BTN_5  
 A4 BTN_6  
-A6 (KeyPreset)  
-A7 BTN_0
+A5 (KeyPreset)  
+A6 BTN_0
+
+キープリセット用のロータリースイッチ回路は
+* Arduino - ロータリスイッチの状態をA/D変換で取得する  
+https://keitetsu.blogspot.com/2014/11/arduino-ad.html  
+の回路図から制作しました。  
+検出用のピンはA5ピンに接続するようにしています。
+ただし、+5V部分はaruduino pro miniの場合、vccピンに接続しています。  
+arduino UNOの場合は5Vピンです。
 
 # 参考資料
 USB_Host_Shield_2.0 library  
