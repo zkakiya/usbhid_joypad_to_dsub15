@@ -52,6 +52,7 @@ struct KeyAssign VGAssign;
 //プリセットの状態を管理する
 int keyPresetNum;
 
+//物理ジョイパッドの状態変化によるイベントを受け、仮想ジョイパッドの状態を変更する
 class MyJoystickEvents : public JoystickEvents {
 public:
         void OnGamePadChanged(const GamePadEventData *evt);
@@ -66,9 +67,6 @@ public:
         void virtualJoypadArrowAssign();
         //仮想ボタン割り当て（方向キー以外）
         void virtualJoypadButtonAssign();
-        //仮想ジョイパッドの状態をarduinoのピンに反映させる。
-        void pinStateOutput();
-
 private:
         uint8_t hatState;//hatスイッチの状態を示す変数
         bool joypadButtonState[HANDLE_BUTTON_NUM];//接続されたジョイパッドが現在押されているボタンを示す配列
@@ -85,12 +83,36 @@ private:
         byte temp_sw_pos = 1;//ロータリSWの変化を検知するための一時的な記録値
 };
 
+//仮想ジョイパッドの状態をarduinoのピンに反映させる。
+void pinStateOutput() {
+//方向キー割り当て
+
+        VHatState[0] ? digitalWrite(2, LOW) : digitalWrite(2, HIGH);
+        VHatState[1] ? digitalWrite(5, LOW) : digitalWrite(5, HIGH);
+        VHatState[2] ? digitalWrite(3, LOW) : digitalWrite(3, HIGH);
+        VHatState[3] ? digitalWrite(4, LOW) : digitalWrite(4, HIGH);
+        //その他ボタン割り当て
+        VButtonState[0] ? digitalWrite(6, LOW) : digitalWrite(6, HIGH);
+        VButtonState[1] ? digitalWrite(7, LOW) : digitalWrite(7, HIGH);
+        VButtonState[2] ? digitalWrite(8, LOW) : digitalWrite(8, HIGH);
+        VButtonState[3] ? digitalWrite(A0, LOW) : digitalWrite(A0, HIGH);
+        VButtonState[4] ? digitalWrite(A1, LOW) : digitalWrite(A1, HIGH);
+        VButtonState[5] ? digitalWrite(A2, LOW) : digitalWrite(A2, HIGH);
+        VButtonState[6] ? digitalWrite(A3, LOW) : digitalWrite(A3, HIGH);
+        VButtonState[7] ? digitalWrite(A4, LOW) : digitalWrite(A4, HIGH);
+        //A5ピンはロータリースイッチ検出に使用するため、JAMMAキー入力には不使用とする。
+        // arduino UNO用（11～13ピン）
+        VButtonState[8] ? digitalWrite(11, LOW) : digitalWrite(11, HIGH);
+        VButtonState[9] ? digitalWrite(12, LOW) : digitalWrite(12, HIGH);
+        VButtonState[10] ? digitalWrite(13, LOW) : digitalWrite(13, HIGH);
+}
 
 
 
 USB Usb;
 USBHub Hub(&Usb);
 HIDUniversal Hid(&Usb);
+
 MyJoystickEvents MyJoyEvents;  //継承した新しいクラスに書き換える
 JoystickReportParser Joy(&MyJoyEvents);  //新しいクラスのインスタンスを使う
 RotarySwChecker RotSwCheck;
@@ -132,7 +154,7 @@ void loop() {
 
         Serial.println(frame_count);
         MyJoyEvents.printActiveVButton();
-        MyJoyEvents.pinStateOutput();
+        pinStateOutput();
 
         //ボトルネックになる可能性があるため、30フレームごとの処理としている
         if(frame_count % 60 == 0)
