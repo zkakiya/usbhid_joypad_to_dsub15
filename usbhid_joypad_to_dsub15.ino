@@ -27,6 +27,7 @@
 #define BASE_FRAME 120
 
 const unsigned long frame_ms = 1000/BASE_FRAME;//1フレーム辺りの単位時間（ms)（秒間120フレーム管理）
+unsigned long frame_checker;//フレーム管理時計の時刻
 int frame_count;//フレームカウント
 
 //ロータリSWのポジション検出用ピン指定
@@ -39,7 +40,7 @@ bool isMacroInProcess = false;
 //方向キーの状態（方向キー）
 bool VHatState[4];
 //方向キー以外の状態（方向キー以外）
-bool VButtonState[HANDLE_BUTTON_NUM];
+bool VButtonState[HANDLE_BUTTON_NUM + HANDLE_KEYMACRO_NUM];
 
 //物理ジョイパッドの状態を管理
 //方向キーの状態（方向キー）
@@ -94,14 +95,13 @@ private:
         byte temp_sw_pos = 1;//ロータリSWの変化を検知するための一時的な記録値
 };
 
-
 //キーマクロの型を定義
 struct KeyMacroStep {
         bool MHatState[4];
         bool MButtonState[HANDLE_OUTPUTBUTTON_NUM];
         int RemainFrame;
 };
-//キーマクロ実際の記述
+//キーマクロ実際の記述（実験用）
 struct KeyMacroStep MacroDetail[] = {
         {{0,0,0,1},{0,0,0,0,0,0},45},
         {{0,1,0,0},{0,0,0,0,0,0},45},
@@ -116,9 +116,9 @@ public:
         void checkKeyMacroFrag();//キーマクロの開始フラグを検知
 
 private:
-        struct KeyMacroStep procedure_arg;//現在再生しているキーマクロステップの一時記憶
+        struct KeyMacroStep procedure_arg;//現在再生しているキーマクロステップ処理用構造体
         int procedure_step;//現在再生しているキーマクロのステップ数
-        int size_arg_macro;//現在再生しているマクロの要素数
+        int size_arg_macro;//現在再生しているマクロの要素全ての数
         int vButton_for_keymacro[HANDLE_KEYMACRO_NUM];//キーマクロ用に定義された仮想ボタン
 };
 
@@ -157,6 +157,7 @@ void setup() {
         if (!Hid.SetReportParser(0, &Joy))
                 ErrorMessage<uint8_t > (PSTR("SetReportParser"), 1);
 
+
         //初期化時に仮想ジョイスティックの状態を確定する（キー割り当て用の配列に現在選ばれているキーコンフィグプリセットを割り当てる）
         uint8_t rotKeyState = RotSwCheck.getRotarySwStatus();
         SetCurrentKeyPreset(rotKeyState - 1);
@@ -167,13 +168,13 @@ void setup() {
 void loop() {
         Usb.Task();
 
-        Serial.println(frame_count);
+        // Serial.print(frame_count);
         MyJoyEvents.printActiveVButton();
-        MyJoyEvents.pinStateOutput();
+        // MyJoyEvents.pinStateOutput();
 
         KeyMacroProcedure.checkKeyMacroFrag();
 
-        //キーマクロを秒間60フレームで制御するためのフレーム調整
+        //キーマクロ1ステップを1/60秒で行うための調整
         if(frame_count % (BASE_FRAME / 60) == 0){
                 KeyMacroProcedure.playKeyMacro();
         }

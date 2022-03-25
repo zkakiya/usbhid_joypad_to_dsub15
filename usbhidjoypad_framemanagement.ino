@@ -1,5 +1,4 @@
 void frameManagement(){
-        unsigned long frame_checker;//フレーム管理時計の時刻
         unsigned long merc;
         unsigned long curr_micro;//現在時刻をマイクロ秒で取得する変数
 
