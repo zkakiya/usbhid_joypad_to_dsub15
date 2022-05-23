@@ -6,7 +6,7 @@ void frameManagement(){
         unsigned long curr = millis();//現在時刻取得
         if(curr - frame_checker > frame_ms) {//現在時刻とフレーム管理時計のタイミングズレチェック
                 Serial.print("*** processing delay :");
-                Serial.println(curr - frame_checker);
+                Serial.print(curr - frame_checker);
                 frame_checker = millis();//現在時刻取得
         } else {
                 while(curr - frame_checker < frame_ms){
