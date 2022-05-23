@@ -17,8 +17,12 @@
 
 //管理するキーアサインプリセットの数
 #define HANDLE_ASSIGN_NUM       9
-//管理するボタンの数
+//管理する方向キーの方向を示す数値
+#define HANDLE_ARROW_DIRECTION  4
+//管理する出力用ボタンの数
 #define HANDLE_BUTTON_NUM       15
+//管理するマクロの数
+#define HANDLE_MACRO_NUM        5
 
 const unsigned long frame_ms = 1000/120;//1フレーム辺りの単位時間（ms)（秒間120フレーム管理）
 int frame_count;//フレームカウント
