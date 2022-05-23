@@ -25,7 +25,8 @@
 #define HANDLE_MACRO_NUM        5
 
 const unsigned long frame_ms = 1000/120;//1フレーム辺りの単位時間（ms)（秒間120フレーム管理）
-int frame_count;//フレームカウント
+unsigned long frame_checker;//フレーム管理時計の時刻
+
 
 //ロータリSWのポジション検出用ピン指定
 #define PIN_ROTARYSW A5
@@ -165,21 +166,19 @@ void setup() {
         //初期化時に仮想ジョイスティックの状態を確定する（キー割り当て用の配列に現在選ばれているキーコンフィグプリセットを割り当てる）
         uint8_t rotKeyState = RotSwCheck.getRotarySwStatus();
         SetCurrentKeyPreset(rotKeyState - 1);
-        // SetCurrentKeyPreset(0);
 
 }
 
 void loop() {
         Usb.Task();
 
-        Serial.println(frame_count);
         MyJoyEvents.virtualJoypadButtonAssign();
         MyJoyEvents.executeJoypadState();
         MyJoyEvents.printActiveVButton();
         MyJoyEvents.pinStateOutput();
         
         //ボトルネックになる可能性があるため、30フレームごとの処理としている
-        if(frame_count % 60 == 0)
+        if(frame_checker % 60 == 0)
         {
                 //【注意】ロータリスイッチを接続していない場合は必ずコメントアウトすること
                 //ロータリスイッチ未接続かつ下記関数がアクティブの場合、装置全体が動作できない
