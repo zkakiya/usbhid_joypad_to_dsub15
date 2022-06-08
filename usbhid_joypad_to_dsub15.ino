@@ -27,7 +27,10 @@
 unsigned long frame_ms = 2;//キー状態の更新レート。1フレーム辺りの単位時間（ms)
 unsigned long frame_checker;//フレーム管理時計の時刻
 
-
+//キープリセット選択用ロータリスイッチを使用するか否かのフラグ（デフォルト:true）
+//【重要】ロータリスイッチを接続していないときは必ずfalseにすること。
+//ロータリスイッチ未接続かつtrueとした場合、装置が動作できない
+bool isUseRotarySw = true;
 //ロータリSWのポジション検出用ピン指定
 #define PIN_ROTARYSW A5
 
@@ -99,7 +102,6 @@ private:
 struct KeyAssign VGAssign;
 struct controlQueue outputBuf;
 
-
 class RotarySwChecker {
 public:
         byte getRotarySwStatus();//ロータリSW状態取得関数
@@ -160,8 +162,6 @@ void setup() {
                 pinMode(thisPin, OUTPUT);
         for (int thisPin=A0; thisPin <= A4; thisPin++)
                 pinMode(thisPin, OUTPUT);
-        // for (int thisPin=A5; thisPin <= A5; thisPin++)
-        //         pinMode(thisPin, INPUT);
 
         delay(200);
 
@@ -171,8 +171,13 @@ void setup() {
         if (isTestMode) frame_ms = testModeFrame_ms;//テストモードon時、キー状態更新レートをテストモード時専用の値にする
 
         //初期化時に仮想ジョイスティックの状態を確定する（キー割り当て用の配列に現在選ばれているキーコンフィグプリセットを割り当てる）
-        uint8_t rotKeyState = RotSwCheck.getRotarySwStatus();
-        SetCurrentKeyPreset(rotKeyState - 1);
+        //isUseRotarySwがfalseの時（ロータリースイッチ不使用の場合）キーコンフィグプリセットは1番目に固定される
+        if (isUseRotarySw) {
+                uint8_t rotKeyState = RotSwCheck.getRotarySwStatus();
+                SetCurrentKeyPreset(rotKeyState - 1);
+        } else {
+                SetCurrentKeyPreset(0);
+        }
 
 }
 
@@ -181,13 +186,8 @@ void loop() {
 
         MyJoyEvents.virtualJoypadButtonAssign();
         MyJoyEvents.executeJoypadState();
-         if (isTestMode) MyJoyEvents.printActiveVButton();
+        MyJoyEvents.printActiveVButton();
         MyJoyEvents.pinStateOutput();
-        
-        //【注意】ロータリスイッチを接続していない場合は必ずコメントアウトすること
-        //ロータリスイッチ未接続かつ下記関数がアクティブの場合、装置全体が動作できない
-        //キープリセットの操作が行われているか（変化があったかどうか）をチェックして、
-        //操作があった際は使用するキープリセットを切り替える
         RotSwCheck.checkRotSwChange();
 
         frameManagement();

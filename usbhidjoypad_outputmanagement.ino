@@ -31,28 +31,31 @@ void MyJoystickEvents::OnButtonDn(uint8_t but_id) {
         VButtonState[VGAssign.buttonAssignTable[but_id - 1]] = true;
 }
 void MyJoystickEvents::printActiveVButton (void) {
-        Serial.print("preset:");
-        Serial.print(keyPresetNum + 1);
-        Serial.print(" vHat+vKey/pinState:");
-        for(int i = 0;i < sizeof(outputBuf.hatState);i++){
-                Serial.print(outputBuf.hatState[i]);
-        };
-        for(int i = 0;i < sizeof(outputBuf.buttonAssignTable);i++){
-                Serial.print(outputBuf.buttonAssignTable[i]);
-        };
-        Serial.print(" pKey:");
-        for(int i = 0;i < sizeof(PButtonState);i++){
-                Serial.print(PButtonState[i]);
-        };
-        Serial.print(" S1:");
-        for(int i = 0;i < sizeof(stick01State);i++){
-                Serial.print(stick01State[i]);
-        };
-        Serial.print(" S2:");
-        for(int i = 0;i < sizeof(stick02State);i++){
-                Serial.print(stick02State[i]);
-        };
-        Serial.println();
+        //isTestModeがtrue時（テストモード）、シリアルモニタに物理ジョイパッドの状態を表示する
+        if (isTestMode) {
+                Serial.print("preset:");
+                Serial.print(keyPresetNum + 1);
+                Serial.print(" vHat+vKey/pinState:");
+                for(int i = 0;i < sizeof(outputBuf.hatState);i++){
+                        Serial.print(outputBuf.hatState[i]);
+                };
+                for(int i = 0;i < sizeof(outputBuf.buttonAssignTable);i++){
+                        Serial.print(outputBuf.buttonAssignTable[i]);
+                };
+                Serial.print(" pKey:");
+                for(int i = 0;i < sizeof(PButtonState);i++){
+                        Serial.print(PButtonState[i]);
+                };
+                Serial.print(" S1:");
+                for(int i = 0;i < sizeof(stick01State);i++){
+                        Serial.print(stick01State[i]);
+                };
+                Serial.print(" S2:");
+                for(int i = 0;i < sizeof(stick02State);i++){
+                        Serial.print(stick02State[i]);
+                };
+                Serial.println();
+        }
 }
 void MyJoystickEvents::virtualJoypadArrowAssign(){
         //仮想ジョイパッドの方向キー状態を定義する関数。
