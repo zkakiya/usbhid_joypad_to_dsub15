@@ -24,12 +24,17 @@
 //管理するマクロの数
 #define HANDLE_MACRO_NUM        5
 
-const unsigned long frame_ms = 1000/120;//1フレーム辺りの単位時間（ms)（秒間120フレーム管理）
+unsigned long frame_ms = 2;//キー状態の更新レート。1フレーム辺りの単位時間（ms)
 unsigned long frame_checker;//フレーム管理時計の時刻
 
 
 //ロータリSWのポジション検出用ピン指定
 #define PIN_ROTARYSW A5
+
+//テストモードのフラグ（デフォルト:false）。true時はシリアルモニタに現在のキー状態を表示する。
+//重い処理のため、true時はキー状態の更新レートがtestModeFrame_msの数値になる（→遅延が大きくなる）
+bool isTestMode = false;
+unsigned long testModeFrame_ms = 1000 / 60;
 
 //仮想ジョイパッドの状態を管理
 //方向キーの状態（方向キー）
@@ -163,6 +168,8 @@ void setup() {
         if (!Hid.SetReportParser(0, &Joy))
                 ErrorMessage<uint8_t > (PSTR("SetReportParser"), 1);
 
+        if (isTestMode) frame_ms = testModeFrame_ms;//テストモードon時、キー状態更新レートをテストモード時専用の値にする
+
         //初期化時に仮想ジョイスティックの状態を確定する（キー割り当て用の配列に現在選ばれているキーコンフィグプリセットを割り当てる）
         uint8_t rotKeyState = RotSwCheck.getRotarySwStatus();
         SetCurrentKeyPreset(rotKeyState - 1);
@@ -174,18 +181,14 @@ void loop() {
 
         MyJoyEvents.virtualJoypadButtonAssign();
         MyJoyEvents.executeJoypadState();
-        MyJoyEvents.printActiveVButton();
+         if (isTestMode) MyJoyEvents.printActiveVButton();
         MyJoyEvents.pinStateOutput();
         
-        //ボトルネックになる可能性があるため、30フレームごとの処理としている
-        if(frame_checker % 60 == 0)
-        {
-                //【注意】ロータリスイッチを接続していない場合は必ずコメントアウトすること
-                //ロータリスイッチ未接続かつ下記関数がアクティブの場合、装置全体が動作できない
-                //キープリセットの操作が行われているか（変化があったかどうか）をチェックして、
-                //操作があった際は使用するキープリセットを切り替える
-                RotSwCheck.checkRotSwChange();
-        }
+        //【注意】ロータリスイッチを接続していない場合は必ずコメントアウトすること
+        //ロータリスイッチ未接続かつ下記関数がアクティブの場合、装置全体が動作できない
+        //キープリセットの操作が行われているか（変化があったかどうか）をチェックして、
+        //操作があった際は使用するキープリセットを切り替える
+        RotSwCheck.checkRotSwChange();
 
         frameManagement();
 }
