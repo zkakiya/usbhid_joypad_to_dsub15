@@ -116,7 +116,6 @@ void MyJoystickEvents::executeJoypadState(void){
         }
 
         virtualJoypadButtonAssign();
-
 }
 
 void MyJoystickEvents::pinStateOutput(void) {

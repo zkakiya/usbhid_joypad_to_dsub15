@@ -4,7 +4,6 @@
 
 #include "hidjoystickrptparser.h"
 
-
 // USBHIDJoystick.inoを改変した
 // 「USBジョイパッドの状態をarduinoピンおよびシリアルモニタに書き出すスケッチ」
 // ロータリースイッチでキープリセットを切り替えることが可能
@@ -23,7 +22,6 @@ bool isUseRotarySw = true;
 //重い処理のため、true時はキー状態の更新レートがtestModeFrame_msの数値になる（→遅延が大きくなる）
 bool isTestMode = false;
 unsigned long testModeFrame_ms = 1000 / 60;
-
 
 //管理するキーアサインプリセットの数
 #define HANDLE_ASSIGN_NUM       9
@@ -72,7 +70,6 @@ public:
         void executeJoypadState();
         //仮想ジョイパッドの状態をarduinoのピンに反映させる。
         void pinStateOutput();
-
 private:
         bool PHatState[HANDLE_ARROW_DIRECTION];//物理ジョイパッド方向キーの状態
         bool PButtonState[HANDLE_BUTTON_NUM];//物理ジョイパッド方向キー以外の状態

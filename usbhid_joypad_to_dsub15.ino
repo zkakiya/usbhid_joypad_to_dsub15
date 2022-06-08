@@ -47,7 +47,6 @@ void setup() {
         } else {
                 SetCurrentKeyPreset(0);
         }
-
 }
 
 void loop() {
