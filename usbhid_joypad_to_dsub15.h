@@ -21,7 +21,7 @@ bool isUseRotarySw = true;
 
 //テストモードのフラグ（デフォルト:false）。true時はシリアルモニタに現在のキー状態を表示する。
 //重い処理のため、true時はキー状態の更新レートがtestModeFrame_msの数値になる（→遅延が大きくなる）
-bool isTestMode = true;
+bool isTestMode = false;
 unsigned long testModeFrame_ms = 1000 / 60;
 
 
