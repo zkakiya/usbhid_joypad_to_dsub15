@@ -19,15 +19,15 @@ void MyJoystickEvents::OnHatSwitch(uint8_t hat) {
         virtualJoypadArrowAssign();
 }
 void MyJoystickEvents::OnButtonUp(uint8_t but_id) {
-        //物理ボタンの状態をチェック
+        //物理ジョイパッドの管理状態を更新
         PButtonState[but_id - 1] = false;
-        //virtualpadButtonAssignを参照して物理ボタンの状態を仮想ジョイパッドに割り当てる
+        //virtualpadButtonAssignを参照して物理ボタンの管理状態を仮想ジョイパッドに割り当てる
         VButtonState[VGAssign.buttonAssignTable[but_id - 1]] = false;
 }
 void MyJoystickEvents::OnButtonDn(uint8_t but_id) {
-        //物理ボタンの状態をチェック
+        //物理ジョイパッドの管理状態を更新
         PButtonState[but_id - 1] = true;
-        //virtualpadButtonAssignを参照して物理ボタンの状態を仮想ジョイパッドに割り当てる
+        //virtualpadButtonAssignを参照して物理ボタンの管理状態を仮想ジョイパッドに割り当てる
         VButtonState[VGAssign.buttonAssignTable[but_id - 1]] = true;
 }
 void MyJoystickEvents::printActiveVButton (void) {
@@ -98,7 +98,7 @@ void MyJoystickEvents::virtualJoypadArrowAssign(){
         }
 }
 void MyJoystickEvents::virtualJoypadButtonAssign(void){
-        //マクロ用仮想ボタン押下中判定時の処理
+        //マクロ用仮想ボタン押下判定時の処理
         //マクロ用仮想ボタン01
         if(VButtonState[HANDLE_BUTTON_NUM + 1]){
                 outputBuf.buttonAssignTable[0] = true;
@@ -117,4 +117,28 @@ void MyJoystickEvents::executeJoypadState(void){
 
         virtualJoypadButtonAssign();
 
+}
+
+void MyJoystickEvents::pinStateOutput(void) {
+        //仮想ジョイパッドの状態をarduinoのピンに出力する。
+        //方向キー割り当て
+
+        outputBuf.hatState[0] ? digitalWrite(2, LOW) : digitalWrite(2, HIGH);
+        outputBuf.hatState[1] ? digitalWrite(5, LOW) : digitalWrite(5, HIGH);
+        outputBuf.hatState[2] ? digitalWrite(3, LOW) : digitalWrite(3, HIGH);
+        outputBuf.hatState[3] ? digitalWrite(4, LOW) : digitalWrite(4, HIGH);
+        //その他ボタン割り当て
+        outputBuf.buttonAssignTable[0] ? digitalWrite(6, LOW) : digitalWrite(6, HIGH);
+        outputBuf.buttonAssignTable[1] ? digitalWrite(7, LOW) : digitalWrite(7, HIGH);
+        outputBuf.buttonAssignTable[2] ? digitalWrite(8, LOW) : digitalWrite(8, HIGH);
+        outputBuf.buttonAssignTable[3] ? digitalWrite(A0, LOW) : digitalWrite(A0, HIGH);
+        outputBuf.buttonAssignTable[4] ? digitalWrite(A1, LOW) : digitalWrite(A1, HIGH);
+        outputBuf.buttonAssignTable[5] ? digitalWrite(A2, LOW) : digitalWrite(A2, HIGH);
+        outputBuf.buttonAssignTable[6] ? digitalWrite(A3, LOW) : digitalWrite(A3, HIGH);
+        outputBuf.buttonAssignTable[7] ? digitalWrite(A4, LOW) : digitalWrite(A4, HIGH);
+        //A5ピンはロータリースイッチ検出に使用するため、JAMMAキー入力には不使用とする。
+        // arduino UNO用（11～13ピン）
+        outputBuf.buttonAssignTable[8] ? digitalWrite(11, LOW) : digitalWrite(11, HIGH);
+        outputBuf.buttonAssignTable[9] ? digitalWrite(12, LOW) : digitalWrite(12, HIGH);
+        outputBuf.buttonAssignTable[10] ? digitalWrite(13, LOW) : digitalWrite(13, HIGH);
 }

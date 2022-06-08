@@ -39,20 +39,6 @@ bool isUseRotarySw = true;
 bool isTestMode = false;
 unsigned long testModeFrame_ms = 1000 / 60;
 
-//仮想ジョイパッドの状態を管理
-//方向キーの状態（方向キー）
-bool VHatState[HANDLE_ARROW_DIRECTION];
-//方向キー以外の状態（方向キー以外）
-bool VButtonState[HANDLE_BUTTON_NUM + HANDLE_MACRO_NUM];
-// マクロの活性化フラグ
-bool isMacroActive[HANDLE_MACRO_NUM];
-
-//物理ジョイパッドの状態を管理
-//方向キーの状態（方向キー）
-bool PHatState[HANDLE_ARROW_DIRECTION];
-//方向キー以外の状態（方向キー以外）
-bool PButtonState[HANDLE_BUTTON_NUM];
-
 //キーアサインの定義
 struct KeyAssign {
         //仮想スティックにアサインする物理スイッチを選択する。
@@ -70,8 +56,8 @@ struct controlQueue {
         bool buttonAssignTable[HANDLE_BUTTON_NUM];
 };
 
-//プリセットの状態を管理する
-int keyPresetNum;
+int keyPresetNum;//参照中のキープリセット
+struct KeyAssign VGAssign;//仮想ジョイパッド構築時に参照するキープリセット状態
 
 class MyJoystickEvents : public JoystickEvents {
 public:
@@ -93,14 +79,17 @@ public:
         void pinStateOutput();
 
 private:
+        bool PHatState[HANDLE_ARROW_DIRECTION];//物理ジョイパッド方向キーの状態
+        bool PButtonState[HANDLE_BUTTON_NUM];//物理ジョイパッド方向キー以外の状態
+        bool VHatState[HANDLE_ARROW_DIRECTION];//仮想ジョイパッド方向キー状態
+        bool VButtonState[HANDLE_BUTTON_NUM + HANDLE_MACRO_NUM];//仮想ジョイパッド方向キー以外の状態
         int hatState[HANDLE_ARROW_DIRECTION];//hatスイッチの状態を示す変数
         bool stick01State[HANDLE_ARROW_DIRECTION];//スティック01（DualShock4の場合左スティック）の状態を示す変数
-        bool stick02State[HANDLE_ARROW_DIRECTION];//スティック02（DualShock4の場合左スティック）の状態を示す変数        
+        bool stick02State[HANDLE_ARROW_DIRECTION];//スティック02（DualShock4の場合左スティック）の状態を示す変数     
         bool joypadButtonState[HANDLE_BUTTON_NUM];//接続されたジョイパッドが現在押されているボタンを示す配列
+        struct controlQueue outputBuf;//ピンに出力する予定のボタン状態を一時記録する構造体
+        bool isMacroActive[HANDLE_MACRO_NUM];// マクロの活性化フラグ
 };
-
-struct KeyAssign VGAssign;
-struct controlQueue outputBuf;
 
 class RotarySwChecker {
 public:
@@ -112,30 +101,6 @@ private:
         byte sw_pos;//ロータリSWの状態
         byte temp_sw_pos = 1;//ロータリSWの変化を検知するための一時的な記録値
 };
-
-void MyJoystickEvents::pinStateOutput(void) {
-        //仮想ジョイパッドの状態をarduinoのピンに出力する。
-        //方向キー割り当て
-
-        outputBuf.hatState[0] ? digitalWrite(2, LOW) : digitalWrite(2, HIGH);
-        outputBuf.hatState[1] ? digitalWrite(5, LOW) : digitalWrite(5, HIGH);
-        outputBuf.hatState[2] ? digitalWrite(3, LOW) : digitalWrite(3, HIGH);
-        outputBuf.hatState[3] ? digitalWrite(4, LOW) : digitalWrite(4, HIGH);
-        //その他ボタン割り当て
-        outputBuf.buttonAssignTable[0] ? digitalWrite(6, LOW) : digitalWrite(6, HIGH);
-        outputBuf.buttonAssignTable[1] ? digitalWrite(7, LOW) : digitalWrite(7, HIGH);
-        outputBuf.buttonAssignTable[2] ? digitalWrite(8, LOW) : digitalWrite(8, HIGH);
-        outputBuf.buttonAssignTable[3] ? digitalWrite(A0, LOW) : digitalWrite(A0, HIGH);
-        outputBuf.buttonAssignTable[4] ? digitalWrite(A1, LOW) : digitalWrite(A1, HIGH);
-        outputBuf.buttonAssignTable[5] ? digitalWrite(A2, LOW) : digitalWrite(A2, HIGH);
-        outputBuf.buttonAssignTable[6] ? digitalWrite(A3, LOW) : digitalWrite(A3, HIGH);
-        outputBuf.buttonAssignTable[7] ? digitalWrite(A4, LOW) : digitalWrite(A4, HIGH);
-        //A5ピンはロータリースイッチ検出に使用するため、JAMMAキー入力には不使用とする。
-        // arduino UNO用（11～13ピン）
-        outputBuf.buttonAssignTable[8] ? digitalWrite(11, LOW) : digitalWrite(11, HIGH);
-        outputBuf.buttonAssignTable[9] ? digitalWrite(12, LOW) : digitalWrite(12, HIGH);
-        outputBuf.buttonAssignTable[10] ? digitalWrite(13, LOW) : digitalWrite(13, HIGH);
-}
 
 USB Usb;
 USBHub Hub(&Usb);
