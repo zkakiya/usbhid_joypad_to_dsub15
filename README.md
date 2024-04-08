@@ -59,7 +59,9 @@ https://qiita.com/Ninagawa_Izumi/items/f8585c5c711bcf065656
 
 # Lisence
 
-This project is licensed under the MIT License, see the LICENSE.txt file for details
+This project is licensed under the MIT License, see the 
+LICENSE.txt
+file for details
 
 
 # Author
