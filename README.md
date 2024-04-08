@@ -57,6 +57,11 @@ https://keitetsu.blogspot.com/2014/11/arduino-ad.html
 https://qiita.com/Ninagawa_Izumi/items/f8585c5c711bcf065656
 
 
+# Lisence
+
+This project is licensed under the MIT License, see the LICENSE.txt file for details
+
+
 # Author
 * カキヤザクロ
 * e-mail: z.kakiya@gmail.com
